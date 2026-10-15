@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}{{ player.name }} — Player Analytics & Projections — NBAEdge{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Player Bio Banner -->
+    <div class="bg-gradient-to-r from-nba-card to-slate-900 p-6 rounded-2xl border border-nba-border shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-5">
+            <div class="w-16 h-16 rounded-2xl bg-orange-500/20 text-orange-400 border border-orange-500/30 flex items-center justify-center text-3xl font-black">
+                {{ player.name[0] }}
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-white">{{ player.name }}</h1>
+                <div class="flex items-center gap-2 text-xs text-slate-400 mt-1 font-medium">
+                    <span class="text-orange-400 font-bold">{{ player.team }}</span> •
+                    <span>{{ player.position }}</span> •
+                    <span>Status: <strong class="text-emerald-400">{{ player.injury_status }}</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3 bg-slate-900/90 p-3 rounded-xl border border-slate-800 text-center text-xs">
+            <div>
+                <span class="text-slate-500 font-semibold uppercase block">PTS</span>
+                <span class="text-base font-black text-white">{{ player.season_pts }}</span>
+            </div>
+            <div>
+                <span class="text-slate-500 font-semibold uppercase block">REB</span>
+                <span class="text-base font-black text-white">{{ player.season_reb }}</span>
+            </div>
+            <div>
+                <span class="text-slate-500 font-semibold uppercase block">AST</span>
+                <span class="text-base font-black text-white">{{ player.season_ast }}</span>
+            </div>
+            <div>
+                <span class="text-slate-500 font-semibold uppercase block">MIN</span>
+                <span class="text-base font-black text-orange-400">{{ player.season_min }}'</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart & Projections Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Interactive Trend Chart -->
+        <div class="lg:col-span-2 bg-nba-card p-6 rounded-2xl border border-nba-border shadow-lg space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-sm font-bold text-white uppercase tracking-wider">Historical Trend (Last 20 Games)</h2>
+                <div class="flex items-center gap-1.5 text-xs font-semibold">
+                    <button id="btn-pts" class="px-2.5 py-1 rounded bg-orange-500 text-white" onclick="switchStat('pts')">PTS</button>
+                    <button id="btn-reb" class="px-2.5 py-1 rounded bg-slate-800 text-slate-400 hover:text-white" onclick="switchStat('reb')">REB</button>
+                    <button id="btn-ast" class="px-2.5 py-1 rounded bg-slate-800 text-slate-400 hover:text-white" onclick="switchStat('ast')">AST</button>
+                </div>
+            </div>
+            <div class="h-64">
+                <canvas id="playerTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Projections for Next Game -->
+        <div class="bg-nba-card p-6 rounded-2xl border border-nba-border shadow-lg space-y-5">
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider flex items-center justify-between">
+                <span>Model Projections</span>
+                <span class="text-xs font-mono font-normal text-slate-400">vs {{ player.next_opponent }}</span>
+            </h2>
+
+            <div class="space-y-3">
+                {% for p in player.projections %}
+                <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-bold text-slate-300">{{ p.stat }}</div>
+                        <div class="text-[10px] text-slate-500">Book Line: {{ p.book_line }}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-base font-black font-mono text-white">{{ p.projection }}</div>
+                        <span class="text-[10px] font-bold {% if p.edge > 0 %}text-emerald-400{% else %}text-blue-400{% endif %}">
+                            {{ p.edge_str }}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Context Checklist -->
+            <div class="pt-3 border-t border-slate-800 text-xs space-y-2 text-slate-400">
+                <div class="flex items-center justify-between">
+                    <span>Blowout Risk:</span>
+                    <strong class="{% if player.blowout_risk %}text-red-400{% else %}text-emerald-400{% endif %}">
+                        {{ "High (>12 pts spread)" if player.blowout_risk else "Low (<6 pts spread)" }}
+                    </strong>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>Back-to-back:</span>
+                    <strong class="text-white">{{ "Yes (0 days rest)" if player.is_b2b else "No (Normal Rest)" }}</strong>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>Opponent Defense:</span>
+                    <strong class="text-white">{{ player.opp_def_rank }} vs {{ player.position }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const chartData = {{ player.chart_data_json|safe }};
+let trendChart = null;
+
+function renderChart(statKey, color) {
+    const ctx = document.getElementById('playerTrendChart').getContext('2d');
+    const labels = chartData.games.map((g, i) => `G${i+1}`);
+    const values = chartData[statKey];
+
+    if (trendChart) trendChart.destroy();
+
+    trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: statKey.toUpperCase(),
+                data: values,
+                borderColor: color,
+                backgroundColor: color + '20',
+                borderWidth: 2.5,
+                tension: 0.35,
+                fill: true,
+                pointRadius: 4,
+                pointBackgroundColor: color
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { color: '#232d42' }, ticks: { color: '#94a3b8' } },
+                y: { grid: { color: '#232d42' }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+}
+
+function switchStat(stat) {
+    document.querySelectorAll('[id^="btn-"]').forEach(b => {
+        b.className = 'px-2.5 py-1 rounded bg-slate-800 text-slate-400 hover:text-white';
+    });
+    const colors = { pts: '#f97316', reb: '#38bdf8', ast: '#34d399' };
+    document.getElementById('btn-' + stat).className = `px-2.5 py-1 rounded bg-orange-500 text-white`;
+    renderChart(stat, colors[stat] || '#f97316');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    switchStat('pts');
+});
+</script>
+{% endblock %}
+

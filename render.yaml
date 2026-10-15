@@ -1,0 +1,23 @@
+# ==============================================================================
+# Render.com Infrastructure Blueprint (100% Free Web Service)
+# Docs: https://render.com/docs/blueprint-spec
+# ==============================================================================
+
+services:
+  - type: web
+    name: nba-edge-predictor
+    env: docker
+    plan: free
+    region: frankfurt  # Frankfurt, Germany for lowest European latency (Spain)
+    dockerfilePath: Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PORT
+        value: 10000
+      - key: ODDS_API_KEY
+        sync: false  # User fills this privately in Render dashboard - NEVER committed to git
+      - key: ALLOWED_ORIGINS
+        value: "https://nba-edge-predictor.onrender.com,http://localhost:3000,http://127.0.0.1:3000"
+

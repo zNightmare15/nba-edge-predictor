@@ -1,0 +1,43 @@
+# API Configuration
+odds_api:
+  api_key: "YOUR_ODDS_API_KEY_HERE"
+  base_url: "https://api.the-odds-api.com/v4"
+  regions: "eu,us"
+  markets: "spreads,totals,h2h"
+  sport: "basketball_nba"
+
+# Database
+database:
+  path: "data/nba_stats.db"
+
+# Model
+model:
+  artifacts_dir: "data/models"
+  retrain_day: "Monday"
+  seasons_train: ["2014-15", "2015-16", "2016-17", "2017-18", "2018-19",
+                   "2019-20", "2020-21", "2021-22"]
+  season_validate: "2022-23"
+  season_test: "2023-24"
+  season_live: "2024-25"
+  lgbm_weight: 0.55
+  xgb_weight: 0.45
+  optuna_trials: 100
+
+# Betting
+betting:
+  bankroll: 1000.0          # Starting bankroll in EUR
+  kelly_fraction: 0.25      # Use 25% Kelly
+  min_edge_pct: 0.03        # Minimum 3% edge to recommend a bet
+  max_risk_level: "HIGH"    # Show all bets (filter in report)
+
+# Stats to model
+target_stats:
+  - pts
+  - reb
+  - ast
+  - fg3_made
+  - pra                     # pts + reb + ast combo
+
+# Feature windows
+feature_windows: [3, 5, 10, 20]
+ewma_span: 10

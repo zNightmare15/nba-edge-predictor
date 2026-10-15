@@ -1,0 +1,42 @@
+name: Security & Secret Audit
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  audit:
+    name: Secret Leak Prevention & Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan for Leaked Secrets
+        run: |
+          echo "Verifying no private .env files are tracked..."
+          if git ls-files | grep -E '^\.env$|\.env\.local|\.key$'; then
+            echo "::error::CRITICAL: Private credential file detected in git index!"
+            exit 1
+          fi
+          echo "Secret file audit passed."
+
+      - name: Verify Dependencies
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run Test Suite
+        run: |
+          pytest tests/
+

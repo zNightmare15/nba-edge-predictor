@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NBA Edge — Machine Learning Betting Dashboard{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nba: {
+                            blue: '#1d428a',
+                            red: '#c8102e',
+                            orange: '#f97316',
+                            gold: '#fbbf24',
+                            dark: '#0b0f19',
+                            card: '#151c2c',
+                            border: '#232d42'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/custom.css">
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-nba-dark text-slate-100 min-h-screen flex flex-col font-sans selection:bg-orange-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-nba-card border-b border-nba-border sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Logo & Name -->
+                <div class="flex items-center space-x-3">
+                    <a href="/" class="flex items-center space-x-3 group">
+                        <span class="text-3xl filter drop-shadow group-hover:scale-110 transition-transform">🏀</span>
+                        <div>
+                            <span class="text-xl font-black tracking-wider text-white">NBA<span class="text-orange-500">EDGE</span></span>
+                            <span class="text-xs block text-slate-400 font-medium tracking-tight">AI Quant Prediction Model (Spain: bet365 / Winamax)</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-1">
+                    <a href="/" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors {% if active_page == 'index' %}bg-orange-500/10 text-orange-400 border border-orange-500/20{% else %}text-slate-300 hover:text-white hover:bg-slate-800{% endif %}">
+                        🎯 Today's Games
+                    </a>
+                    <a href="/bets" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors {% if active_page == 'bets' %}bg-orange-500/10 text-orange-400 border border-orange-500/20{% else %}text-slate-300 hover:text-white hover:bg-slate-800{% endif %}">
+                        💰 Best Picks (+EV)
+                    </a>
+                    <a href="/performance" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors {% if active_page == 'performance' %}bg-orange-500/10 text-orange-400 border border-orange-500/20{% else %}text-slate-300 hover:text-white hover:bg-slate-800{% endif %}">
+                        📈 Analytics & ROI
+                    </a>
+                    <a href="/settings" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors {% if active_page == 'settings' %}bg-orange-500/10 text-orange-400 border border-orange-500/20{% else %}text-slate-300 hover:text-white hover:bg-slate-800{% endif %}">
+                        ⚙️ Settings
+                    </a>
+                </nav>
+
+                <!-- Status Badges & Quick Stats -->
+                <div class="flex items-center space-x-3 text-xs">
+                    <div class="hidden sm:flex items-center bg-slate-900 border border-slate-700/60 rounded-full px-3 py-1 space-x-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-slate-300 font-mono">10-Yr ML Ensemble Active</span>
+                    </div>
+                    <div class="bg-orange-500/10 border border-orange-500/30 rounded-full px-3 py-1 text-orange-400 font-mono font-semibold">
+                        Bankroll: <span class="text-white font-bold">€{{ "%.2f"|format(bankroll|default(1000.0)) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-nba-border bg-nba-card/50 py-4 text-xs text-slate-500 text-center">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div>
+                © 2026 NBAEdge Machine Learning System. Tailored for legal sports betting in Spain under DGOJ licensing (bet365.es & winamax.es).
+            </div>
+            <div class="flex items-center space-x-4">
+                <span>Play Responsibly (18+)</span>
+                <span class="text-slate-700">•</span>
+                <span>Fractional Kelly Stake Sizing</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/static/js/charts.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+

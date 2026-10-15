@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}System Settings & Risk Parameters — NBAEdge{% endblock %}
+
+{% block content %}
+<div x-data="settingsManager()" class="max-w-3xl mx-auto space-y-6">
+
+    <div class="bg-nba-card p-6 rounded-2xl border border-nba-border shadow-xl space-y-6">
+        <div>
+            <h1 class="text-xl font-bold text-white flex items-center gap-2">
+                <span>⚙️ System Configuration</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">
+                Control your bankroll, position sizing criteria, and API connections for Spanish licensed sportsbooks.
+            </p>
+        </div>
+
+        <form @submit.prevent="saveSettings()" class="space-y-6">
+            <!-- Bankroll & Sizing -->
+            <div class="space-y-4">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-orange-400 border-b border-slate-800 pb-2">
+                    Bankroll & Staking Strategy
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Total Active Bankroll (€)</label>
+                        <input type="number" step="10" x-model="settings.bankroll"
+                               class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500">
+                        <span class="text-[10px] text-slate-500">Total capital allocated across bet365 and Winamax.</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Kelly Criterion Fraction</label>
+                        <select x-model="settings.kelly_fraction" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500">
+                            <option value="0.125">1/8 Kelly (Ultra-conservative)</option>
+                            <option value="0.25">1/4 Kelly (Recommended default)</option>
+                            <option value="0.5">1/2 Kelly (Moderate growth)</option>
+                            <option value="1.0">Full Kelly (Aggressive)</option>
+                        </select>
+                        <span class="text-[10px] text-slate-500">Quarter Kelly preserves bankroll against statistical drawdowns.</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Minimum Edge % to Trigger Bet</label>
+                        <input type="number" step="0.5" x-model="settings.min_edge_pct"
+                               class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500">
+                        <span class="text-[10px] text-slate-500">Ignores thin edges (e.g., minimum 3.0% edge recommended).</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Max Risk Level Allowed</label>
+                        <select x-model="settings.max_risk_level" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500">
+                            <option value="LOW">Low Risk Only (Highest Safety)</option>
+                            <option value="MEDIUM">Low & Medium Risk (Balanced)</option>
+                            <option value="HIGH">All Bets (Include High Risk / High Edge)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sportsbooks & APIs -->
+            <div class="space-y-4">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-orange-400 border-b border-slate-800 pb-2">
+                    Sportsbook & API Integrations
+                </h2>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">The Odds API Key</label>
+                    <input type="password" x-model="settings.odds_api_key" placeholder="Enter API Key from the-odds-api.com"
+                           class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500 font-mono">
+                    <span class="text-[10px] text-slate-500">Enables automated live odds fetching for European & US sportsbooks.</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Target Sportsbooks (Spain)</label>
+                    <div class="flex items-center gap-6 text-xs text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" checked disabled class="accent-orange-500 rounded">
+                            <span class="font-bold text-white">bet365.es</span> (DGOJ Licensed)
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" checked disabled class="accent-orange-500 rounded">
+                            <span class="font-bold text-white">Winamax.es</span> (DGOJ Licensed)
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Feedback & Submit Button -->
+            <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                <span class="text-xs text-emerald-400" x-show="saved" x-transition>✓ Settings updated successfully</span>
+                <span x-show="!saved"></span>
+                <button type="submit" class="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-orange-500/20 transition-all">
+                    Save Configuration
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script>
+function settingsManager() {
+    return {
+        settings: {
+            bankroll: {{ bankroll|default(1000.0) }},
+            kelly_fraction: "0.25",
+            min_edge_pct: 3.0,
+            max_risk_level: "HIGH",
+            odds_api_key: ""
+        },
+        saved: false,
+        saveSettings() {
+            fetch('/api/settings', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(this.settings)
+            }).then(() => {
+                this.saved = true;
+                setTimeout(() => { this.saved = false; }, 3000);
+            });
+        }
+    }
+}
+</script>
+{% endblock %}
+

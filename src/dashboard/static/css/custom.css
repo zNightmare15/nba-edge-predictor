@@ -1,0 +1,483 @@
+/* ============================================================
+   NBA Betting Dashboard — Custom Styles
+   ============================================================ */
+
+/* ----- Custom Scrollbar ----- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #1a1a2e;
+}
+::-webkit-scrollbar-thumb {
+    background: #3b3b5c;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #f97316;
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #3b3b5c #1a1a2e;
+}
+
+/* ----- Root Variables ----- */
+:root {
+    --nba-blue: #1d428a;
+    --nba-red: #c8102e;
+    --nba-orange: #f97316;
+    --nba-gold: #fbbf24;
+    --surface-1: #0f172a;
+    --surface-2: #1e293b;
+    --surface-3: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --accent: #f97316;
+}
+
+/* ----- Base ----- */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--surface-1);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ----- Card Effects ----- */
+.card {
+    background: var(--surface-2);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.75rem;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.card:hover {
+    border-color: rgba(249, 115, 22, 0.3);
+    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.08),
+                0 0 0 1px rgba(249, 115, 22, 0.1);
+    transform: translateY(-2px);
+}
+
+.card-static {
+    background: var(--surface-2);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.75rem;
+}
+
+/* ----- KPI Cards ----- */
+.kpi-card {
+    background: linear-gradient(135deg, var(--surface-2) 0%, rgba(30, 41, 59, 0.8) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+}
+
+.kpi-card:hover {
+    border-color: rgba(249, 115, 22, 0.3);
+    transform: translateY(-1px);
+}
+
+.kpi-card .kpi-value {
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.025em;
+}
+
+.kpi-card .kpi-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+/* ----- Risk Badges ----- */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-low {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge-medium {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.badge-high {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ----- Edge Badges ----- */
+.edge-positive {
+    color: #4ade80;
+}
+.edge-negative {
+    color: #f87171;
+}
+
+/* ----- Sparkline Container ----- */
+.sparkline-container {
+    width: 80px;
+    height: 30px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.sparkline-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ----- Navigation ----- */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    border-radius: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.nav-item:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-item.active {
+    color: var(--nba-orange);
+    background: rgba(249, 115, 22, 0.1);
+    border-left: 3px solid var(--nba-orange);
+}
+
+/* ----- Sidebar ----- */
+.sidebar {
+    background: linear-gradient(180deg, #0c1222 0%, #0f172a 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, var(--nba-orange), #fb923c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ----- Tables ----- */
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.data-table thead th {
+    padding: 0.75rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.data-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.data-table tbody td {
+    padding: 0.65rem 1rem;
+    font-size: 0.8125rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    vertical-align: middle;
+}
+
+/* Row risk tints */
+.data-table tbody tr.risk-low {
+    background: rgba(34, 197, 94, 0.03);
+}
+.data-table tbody tr.risk-medium {
+    background: rgba(251, 191, 36, 0.03);
+}
+.data-table tbody tr.risk-high {
+    background: rgba(239, 68, 68, 0.03);
+}
+
+/* ----- Buttons ----- */
+.btn-primary {
+    background: linear-gradient(135deg, var(--nba-orange), #ea580c);
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: var(--surface-3);
+    color: var(--text-primary);
+    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ----- Form Inputs ----- */
+.form-input {
+    background: var(--surface-1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--nba-orange);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+.form-input::placeholder {
+    color: #475569;
+}
+
+/* Edge input in tables — compact */
+.line-input {
+    width: 70px;
+    text-align: center;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.8rem;
+    background: var(--surface-1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.375rem;
+    color: var(--text-primary);
+    transition: border-color 0.15s;
+}
+
+.line-input:focus {
+    outline: none;
+    border-color: var(--nba-orange);
+}
+
+/* ----- Status Indicators ----- */
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.online {
+    background: #4ade80;
+    box-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
+    animation: pulse-green 2s infinite;
+}
+
+.status-dot.offline {
+    background: #64748b;
+}
+
+@keyframes pulse-green {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ----- Demo Banner ----- */
+.demo-banner {
+    background: linear-gradient(90deg, rgba(251, 191, 36, 0.15) 0%, rgba(249, 115, 22, 0.15) 100%);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    color: #fbbf24;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ----- Smooth Transitions ----- */
+.fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ----- Player Link ----- */
+.player-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s;
+}
+
+.player-link:hover {
+    color: var(--nba-orange);
+}
+
+/* ----- Game Card ----- */
+.game-card-header {
+    background: linear-gradient(135deg, rgba(29, 66, 138, 0.3) 0%, rgba(15, 23, 42, 0.8) 100%);
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ----- Select / Dropdown ----- */
+.form-select {
+    background: var(--surface-1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    cursor: pointer;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: var(--nba-orange);
+}
+
+/* ----- Toggle Switch ----- */
+.toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    background: var(--surface-3);
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.toggle-switch.active {
+    background: var(--nba-orange);
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.toggle-switch.active::after {
+    transform: translateX(18px);
+}
+
+/* ----- Mobile Responsive ----- */
+@media (max-width: 1024px) {
+    .sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+        z-index: 50;
+        transition: transform 0.3s ease;
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+}
+
+/* ----- Chart Container ----- */
+.chart-container {
+    position: relative;
+    width: 100%;
+    background: var(--surface-2);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 1rem;
+}
+
+/* ----- Toast Notifications ----- */
+.toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--surface-2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ----- Injury Status Badges ----- */
+.injury-out      { color: #f87171; }
+.injury-doubtful { color: #fb923c; }
+.injury-questionable { color: #fbbf24; }
+.injury-probable { color: #a3e635; }
+.injury-available { color: #4ade80; }
